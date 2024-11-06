@@ -28,6 +28,7 @@
         <!-- Template Stylesheet -->
         <link href="css/style.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.css">
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
         <style>
             .destination-img img {
                 width: 100%; /* Full width of the container */
@@ -40,54 +41,84 @@
 
         <style>
             body{
-                color: 
-                #faf8f5;
-                
-            }
-            .image-wrapper {
-                position: relative;
-                display: inline-block;
-            }
-    
-            .border-frame {
-                border: 50px solid transparent;
-    
-                overflow: hidden;
-            }
-    
-            .main-image {
-                width: 400px;
-                /* Set a specific width as needed */
-                height: 500px;
-                /* Keep the height consistent or adjust as desired */
-                object-fit: cover;
-                border-radius: 10px;
-            }
-    
-    
+            color: 
+            #faf8f5;
+            
+        }
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .border-frame {
+            border: 50px solid transparent;
+            overflow: hidden;
+        }
+        
+        .main-image {
+            width: 400px; /* Set a specific width */
+            height: 500px; /* Keep the height consistent */
+            object-fit: cover; /* Ensure the image fills the container without distortion */
+            border-radius: 10px;
+        }
+        .overlay-image {
+            position: absolute;
+            top: 50%; /* Center vertically */
+            right: -60px; /* Adjust right positioning */
+            transform: translateY(-50%); /* Center vertically */
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1; /* Ensure the overlay is above the main image */
+            border: 3px solid white;
+        }
+        
+        .small-image {
+            width: 100%; /* Ensure the image fits within its container */
+            max-width: 300px; /* Limit max-width for larger screens */
+            height: auto; /* Maintain aspect ratio */
+            border: 2px solid #fff; /* Add a white border around the small image */
+            border-radius: 8px; /* Optional: add rounded corners to the border */
+        }
+  /* Tablet and smaller laptop view adjustments */
+  @media (max-width: 1024px) {
             .overlay-image {
-                position: absolute;
+                width: 40%; /* Reduce width for smaller screens */
+                max-width: 250px; /* Limit max-width */
+                right: 10px; /* Ensure small image stays within view */
                 top: 50%; /* Center vertically */
-                right: -60px; /* Align to the right edge */
                 transform: translateY(-50%); /* Center the image vertically */
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                z-index: 1; /* Ensure the overlay is above the main image */
-                border: 3px solid white;
             }
-    
-            .small-image {
-                width: 300px;
-                /* Adjust width as needed */
-                height: 300px;
+        
+            .main-image {
+                width: 100%; /* Ensure the main image is responsive */
+                max-height: 400px; /* Adjust height for smaller screens */
             }
-            .about-page .bg-breadcrumb {
-                background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../img/img.png);
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
+        }
+ /* Mobile view adjustments */
+ @media (max-width: 767px) {
+            .overlay-image {
+                right: 0; /* Ensure small image stays fully within the viewport */
+                top: 50%; /* Center vertically */
+                transform: translateY(-50%); /* Center the small image vertically */
+                width: 50%; /* Set width to make sure it's not too large */
+                max-width: 200px; /* Limit max width for the small image */
+                height: auto; /* Maintain aspect ratio */
             }
+        
+            .main-image {
+                width: 100%; /* Ensure the main image fits full width */
+                height: auto; /* Maintain aspect ratio */
+                max-height: 300px; /* Limit max-height on mobile */
+            }
+        }
+        .about-page .bg-breadcrumb {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/about1.jpg);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+       
             .unavailable-date {
               border-color: red !important;
              color: red !important;
@@ -152,6 +183,7 @@
             </nav>
 
             <!-- Carousel Start -->
+            <div data-aos="fade-up" data-aos-delay="200">
             <div class="carousel-header">
                 <div id="carouselId" class="carousel slide" data-bs-ride="carousel">
                     <ol class="carousel-indicators">
@@ -213,6 +245,7 @@
                     </button>
                 </div>
             </div>
+            </div>
             <!-- Carousel End -->
         </div>
         <!-- <div class="container-fluid search-bar position-relative" style="top: -50%; transform: translateY(-50%);">
@@ -226,6 +259,7 @@
         <!-- Navbar & Hero End -->
 
         <!-- About Start -->
+        <div data-aos="fade-up" data-aos-delay="400">
         <div class="container-fluid about py-5">
             <div class="container py-5">
                 <div class="row g-5 align-items-center">
@@ -242,7 +276,7 @@
                     <div class="col-lg-6 content-section"
                          style="background: linear-gradient(rgba(255, 255, 255, .8), rgba(255, 255, 255, .8));">
                         <h5 class="section-about-title pe-3">About Us</h5>
-                        <h1 class="mb-4">Welcome to <span class="text-primary">Travela</span></h1>
+                        <h1 class="mb-4">Welcome to <span class="text-primary">Convention Center</span></h1>
                         <p class="mb-4" style="color: black;">The premier destination for unforgettable events. We are dedicated to providing a seamless experience for all types of gatherings, including conferences, weddings, corporate meetings, and social celebrations. Our state-of-the-art facilities feature versatile event spaces equipped with the latest technology, ensuring that your event runs smoothly from start to finish. </p>
                         <p class="mb-4" style="color: black;">With a professional team of experienced event coordinators, we take pride in our ability to cater to your unique needs and preferences, offering tailored services such as catering, audiovisual support, and personalized planning assistance. Conveniently located in Kochi, we strive to create memorable experiences that exceed your expectations, making every event special and stress-free.</p>
                         <div class="row gy-2 gx-4 mb-4" style="color: black;">
@@ -269,12 +303,13 @@
                 </div>
             </div>
         </div>
-        
+        </div>
        
         <!-- About End -->
 
         <!-- Services Start -->
-        <div class="container-fluid bg-light service py-5">
+        <div data-aos="fade-up" data-aos-delay="600"> 
+        <div class="container-fluid bg-light service py-2">
             <div class="container py-5">
                 <div class="mx-auto text-center mb-5" style="max-width: 900px;">
                     <h5 class="section-title px-3">Services</h5>
@@ -368,9 +403,11 @@
                 </div>
             </div>
         </div>
+        </div>
         <!-- Services End -->
 
         <!-- Events Start -->
+        <div data-aos="fade-up" data-aos-delay="800">
         <div class="container-fluid destination py-5">
             <div class="container py-5">
                 <div class="mx-auto text-center mb-5" style="max-width: 900px;">
@@ -678,16 +715,18 @@
                 </div>
             </div>
         </div>
+        </div>
         <!-- Events End -->
 
        
 
         <!-- Gallery Start -->
+        <div data-aos="fade-up" data-aos-delay="800">
         <div class="container-fluid gallery py-5 my-5">
             <div class="mx-auto text-center mb-5" style="max-width: 900px;">
                 <h5 class="section-title px-3">Our Gallery</h5>
                 <h1 class="mb-4"><em>Inside Our Convention Center: A Visual Journey</em></h1>
-                <p class="mb-0">Discover the elegance and functionality of our convention center through our gallery, featuring stunning images of our sophisticated interiors, spacious parking areas, and thoughtfully designed amenities that create an inviting atmosphere for every occasion.
+                <p class="mb-0" style="color: black;">Discover the elegance and functionality of our convention center through our gallery, featuring stunning images of our sophisticated interiors, spacious parking areas, and thoughtfully designed amenities that create an inviting atmosphere for every occasion.
                 </p>
             </div>
             <div class="tab-class text-center">
@@ -1043,6 +1082,7 @@
                 </div>
             </div>
         </div>
+        </div>
         <!-- Gallery End -->
 
         <!-- Tour Booking Start -->
@@ -1127,6 +1167,7 @@
         
 
         <!-- Testimonial Start -->
+        <div data-aos="fade-up" data-aos-delay="800">
         <div class="container-fluid testimonial" style="padding-top: 0; padding-bottom: 3rem;">
             <div class="container" style="padding-top: 0; padding-bottom: 3rem;">
                 <div class="mx-auto text-center mb-5" style="max-width: 900px;">
@@ -1188,10 +1229,12 @@
                 </div>
             </div>
         </div>
+    </div>
         <!-- Testimonial End -->
 
        
         <!-- Footer Start -->
+        <div data-aos="fade-up" data-aos-delay="800">
         <div class="container-fluid footer py-5">
             <div class="container py-5">
                 <div class="row g-5">
@@ -1277,6 +1320,7 @@
                 </div>
             </div>
         </div>
+        </div>
         <!-- Footer End -->
         
         <!-- Copyright Start -->
@@ -1314,7 +1358,10 @@
         
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
-       
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+            AOS.init();
+          </script>
        
     </body>
 

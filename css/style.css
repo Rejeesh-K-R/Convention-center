@@ -1248,3 +1248,6 @@
     background: var(--bs-dark) !important;
 }
 /*** copyright end ***/
+html, body {
+    overflow-x: hidden;
+  }
