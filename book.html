@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Booking Calendar</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body, html {
+            margin: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        
+        .calendar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background-color: #f7f7f7;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .days-of-week {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            width: 100%;
+            background-color: #ddd;
+        }
+        
+        .days-of-week div {
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            width: 100%;
+        }
+        
+        .calendar-days .day {
+            padding: 20px;
+            border: 1px solid #ccc;
+            text-align: center;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            max-width: 500px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            margin-top: 10px;
+        }
+        
+        input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="time"] {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+        }
+        
+        input[type="submit"] {
+            padding: 10px;
+            margin-top: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="calendar">
+        <header>
+            <h1>November 2024</h1>
+            <div class="navigation">
+                <button>&lt;</button>
+                <button>&gt;</button>
+            </div>
+        </header>
+        <div class="days-of-week">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+        </div>
+        <div class="calendar-days">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div class="day" onclick="openModal(1)">1</div>
+            <div class="day" onclick="openModal(2)">2</div>
+            <div class="day" onclick="openModal(3)">3</div>
+            <div class="day" onclick="openModal(4)">4</div>
+            <div class="day" onclick="openModal(5)">5</div>
+            <div class="day" onclick="openModal(6)">6</div>
+            <div class="day" onclick="openModal(7)">7</div>
+            <div class="day" onclick="openModal(8)">8</div>
+            <div class="day" onclick="openModal(9)">9</div>
+            <div class="day" onclick="openModal(10)">10</div>
+            <div class="day" onclick="openModal(11)">11</div>
+            <div class="day" onclick="openModal(12)">12</div>
+            <div class="day" onclick="openModal(13)">13</div>
+            <div class="day" onclick="openModal(14)">14</div>
+            <div class="day" onclick="openModal(15)">15</div>
+            <div class="day" onclick="openModal(16)">16</div>
+            <div class="day" onclick="openModal(17)">17</div>
+            <div class="day" onclick="openModal(18)">18</div>
+            <div class="day" onclick="openModal(19)">19</div>
+            <div class="day" onclick="openModal(20)">20</div>
+            <div class="day" onclick="openModal(21)">21</div>
+            <div class="day" onclick="openModal(22)">22</div>
+            <div class="day" onclick="openModal(23)">23</div>
+            <div class="day" onclick="openModal(24)">24</div>
+            <div class="day" onclick="openModal(25)">25</div>
+            <div class="day" onclick="openModal(26)">26</div>
+            <div class="day" onclick="openModal(27)">27</div>
+            <div class="day" onclick="openModal(28)">28</div>
+            <div class="day" onclick="openModal(29)">29</div>
+            <div class="day" onclick="openModal(30)">30</div>
+            <div class="day" onclick="openModal(31)">31</div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Book the Convention Center</h2>
+            <p id="modal-date">You selected: <span></span></p>
+            <form id="bookingForm" onsubmit="submitForm(event)">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+                
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" required>
+                
+                <label for="date">Date:</label>
+                <input type="date" id="date" required>
+                
+                <label for="time">Time:</label>
+                <input type="time" id="time" required>
+                
+                <input type="submit" value="Book Now">
+            </form>
+            <div id="confirmationMessage" class="hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(day) {
+            document.getElementById('modal-date').querySelector('span').innerText = day;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('bookingForm').reset();
+            document.getElementById('confirmationMessage').innerHTML = '';
+            document.getElementById('confirmationMessage').classList.add('hidden');
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            const day = document.getElementById('modal-date').querySelector('span').innerText;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+
+            document.getElementById('confirmationMessage').innerHTML = 
+                `<h3>Booking Confirmed!</h3>
+                <p>Details:</p>
+                <p>Name: ${name}</p>
+                <p>Email: ${email}</p>
+                <p>Phone: ${phone}</p>
+                <p>Date: ${date}</p>
+                <p>Time: ${time}</p>`;
+            document.getElementById('confirmationMessage').classList.remove('hidden');
+            closeModal();
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('modal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
