@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
   <style>
-    body {
+     body {
       margin: 25px;
       font-family: Arial, sans-serif;
       background-color: white;
@@ -131,7 +131,38 @@
       .form-group label {
         width: 100px; /* Adjust label width for smaller screens */
       }
+
+      /* Make the calendar fit better on mobile */
+      #calendar {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+      }
+
+      /* Fix calendar arrow and today button in mobile view */
+      .fc-toolbar-chunk {
+        display: flex;
+        justify-content: center;
+      }
+
+      .fc-prev-button, .fc-next-button {
+        font-size: 18px;
+      }
+
+      .fc-button {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .fc-today-button {
+        display: none; /* Hide today button on small screens */
+      }
+
+      .fc-header-toolbar {
+        flex-wrap: wrap;
+      }
     }
+
   </style>
 </head>
 <body>
