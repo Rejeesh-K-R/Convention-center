@@ -317,9 +317,11 @@
         <div class="popup-content">
             <h3>Success!</h3>
             <p>Booking submitted successfully!</p>
-            <button onclick="closeSuccessPopup()">OK</button>
+            <button onclick="redirectToCart()">Pay Right Now</button>
+            <button onclick="bookAnotherHall()">Book Another Hall</button>
         </div>
     </div>
+    
     
 
     <script>
@@ -339,6 +341,17 @@
 function closeSuccessPopup() {
     const successPopup = document.getElementById('successPopup');
     successPopup.style.display = 'none'; // Hide the popup
+}
+
+function redirectToCart() {
+    // Redirect to cart.html
+    window.location.href = 'cart.html';
+}
+
+function bookAnotherHall() {
+    // Hide the popup and reset the booking form
+    closeSuccessPopup();
+    document.getElementById('bookingForm').reset();
 }
 
     </script>
