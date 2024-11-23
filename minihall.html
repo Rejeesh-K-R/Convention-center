@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Calendar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .calendar {
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .day {
+            padding: 8px;
+        }
+
+        .calendar-dates {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-gap: 8px;
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .date {
+            width: 100%;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .date:hover {
+            background-color: #dcdcdc;
+        }
+
+        /* Modal Style */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow: auto;
+            padding-top: 50px;
+            transition: opacity 0.5s ease;
+        }
+
+        #modal-content {
+            background: #fff;
+            margin: 5% auto;
+            padding: 30px;
+            width: 50%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        #closeModal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #closeModal:hover,
+        #closeModal:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .form-group {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #4CAF50;
+        }
+
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    
+<style>
+    .hall-selector {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dropbtn:hover {
+    background-color: #45a049;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-radius: 5px;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+</style>   
+
+<script>
+    let currentHall = "Main Hall";
+
+function selectHall(hall) {
+    currentHall = hall;
+    document.getElementById('selected-hall').textContent = `Currently Viewing: ${hall}`;
+    // Optionally, reload or modify the calendar based on the selected hall
+    generateCalendar();
+}
+
+</script>
+
+<script>
+    function generateCalendar() {
+    // Adjust the availabilityData logic or fetch data dynamically based on currentHall
+    const hallSpecificData = availabilityData[currentHall] || availabilityData;
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const calendarContainer = document.getElementById("datesContainer");
+    const monthYear = document.getElementById("monthYear");
+
+    calendarContainer.innerHTML = '';
+    monthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        calendarContainer.innerHTML += `<div class="date"></div>`;
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+        const isBookable = hallSpecificData[dateKey] !== false;
+        const dateClass = isBookable ? 'date bookable' : 'date not-bookable';
+        calendarContainer.innerHTML += `<div class="${dateClass}" onclick="handleDateClick('${dateKey}')">${i}</div>`;
+    }
+}
+
+</script>
+
+    <div class="calendar">
+        <div class="hall-selector">
+            <div class="dropdown">
+                <button class="dropbtn">Select Hall</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="selectHall('Main Hall')">Main Hall</a>
+                    <a href="#" onclick="selectHall('Mini Hall')">Mini Hall</a>
+                </div>
+            </div>
+            <!-- <span id="selected-hall">Currently Viewing: Main Hall</span> -->
+        </div>
+        <div class="calendar-header">
+            <button class="prev-month" onclick="changeMonth(-1)">Prev</button>
+            <span class="month-year" id="monthYear">November 2024</span>
+            <button class="next-month" onclick="changeMonth(1)">Next</button>
+        </div>
+        <div class="calendar-days">
+            <div class="day">Sun</div>
+            <div class="day">Mon</div>
+            <div class="day">Tue</div>
+            <div class="day">Wed</div>
+            <div class="day">Thu</div>
+            <div class="day">Fri</div>
+            <div class="day">Sat</div>
+        </div>
+        <div class="calendar-dates" id="datesContainer">
+            <!-- Dates will be populated here -->
+        </div>
+    </div>
+    
+    <!-- Booking Modal -->
+    <div id="modal" style="display: none;">
+        <div id="modal-content">
+            <span id="closeModal">&times;</span>
+            <h2 class="modal-title">Book Appointment for <span id="modal-date" style="color: #4CAF50;"></span></h2>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" required />
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" required />
+                </div>
+                <div class="form-group">
+                    <label for="timeSlot">Time Slot:</label>
+                    <select id="timeSlot" required>
+                        <option value="1">10am-2:30pm</option>
+                        <option value="2">3:30pm-8pm</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    
+    <!-- Styled Warning Popup -->
+    <div id="warningModal" style="display: none;">
+        <div class="warning-overlay"></div>
+        <div class="warning-container">
+            <div class="warning-content">
+                <h3>This date is not available.</h3>
+                <p>Please choose another day.</p>
+                <button class="close-button" onclick="closeWarning()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Predefined dates: true means bookable, false means not available
+        const availabilityData = {
+            '2024-11-1': false, // Example: unavailable date
+            '2024-11-12': true,   // Example: available date
+            '2024-11-25': false,  // Another example of unavailable date
+            '2024-11-13': false 
+        };
+    
+        let selectedDate = null;
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+        function generateCalendar() {
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const calendarContainer = document.getElementById("datesContainer");
+            const monthYear = document.getElementById("monthYear");
+    
+            calendarContainer.innerHTML = '';
+            monthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                calendarContainer.innerHTML += `<div class="date"></div>`;
+            }
+    
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const isBookable = availabilityData[dateKey] !== false;
+                const dateClass = isBookable ? 'date bookable' : 'date not-bookable';
+                calendarContainer.innerHTML += `<div class="${dateClass}" onclick="handleDateClick('${dateKey}')">${i}</div>`;
+            }
+        }
+    
+        function handleDateClick(date) {
+            if (availabilityData[date] === false) {
+                openWarningModal();
+            } else {
+                openBookingModal(date);
+            }
+        }
+    
+        function openBookingModal(date) {
+            selectedDate = date;
+            document.getElementById('modal-date').textContent = date;
+            document.getElementById('modal').style.display = 'block';
+        }
+    
+        function openWarningModal() {
+            document.getElementById('warningModal').style.display = 'block';
+        }
+    
+        function closeWarning() {
+            document.getElementById('warningModal').style.display = 'none';
+        }
+    
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        }
+    
+        document.getElementById('closeModal').onclick = closeModal;
+        generateCalendar();
+    </script>
+    
+    <style>
+        .calendar { /* Add your calendar styles here */ }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; }
+        .calendar-days { display: flex; }
+        .calendar-dates { display: flex; flex-wrap: wrap; }
+        .date { width: 14.28%; text-align: center; padding: 5px; cursor: pointer; }
+        .bookable { background-color: #dff0d8; } /* Available dates in green */
+        .not-bookable { background-color: #f2dede; cursor: not-allowed; } /* Unavailable dates in red */
+        
+        /* Modal Styling */
+        #modal, #warningModal { display: none; /* Add your modal styles here */ }
+    
+        /* Warning Modal Styles */
+        .warning-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+    
+        .warning-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+        }
+    
+        .warning-content h3 {
+            color: #FF6B6B;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+    
+        .warning-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+    
+        .close-button {
+            margin-top: 15px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #FF6B6B;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+    
+        .close-button:hover {
+            background-color: #ff4c4c;
+        }
+    </style>
+    
+    
+
+</body>
+</html>

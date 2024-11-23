@@ -1,134 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Booking</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
-    <style>
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin-top: 10px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Width Calendar Booking</title>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <style>
+   /* General body styling */
+/* General body styling */
+body {
+    margin: 25px;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f5f5; /* Light background for overall contrast */
+}
 
-        .day {
-            width: 40px;
-            height: 40px;
-            border: 1px solid #ccc;
-            text-align: center;
-            line-height: 40px;
-            cursor: pointer;
-        }
+/* Calendar container */
+#calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
 
-        .unavailable {
-            background-color: red !important;
-            color: white !important;
-            cursor: not-allowed;
-        }
+/* Calendar grid setup */
+#calendar {
+    display: grid;
+    gap: 10px; 
+    width: 100%;
+    max-width: 1200px; /* Limiting max width for better layout */
+    margin: 10px;
+}
 
-        .selected {
-            background-color: blue;
-            color: white;
-        }
-    </style>
+/* Styling for the calendar day boxes */
+.fc .fc-daygrid-day {
+    background-color: #ffffff; /* White background */
+    border-radius: 8px;
+    border: 1px solid #e0e0e0; /* Light border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Hover effect for day boxes */
+.fc .fc-daygrid-day:hover {
+    transform: scale(1.05); /* Slight zoom */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
+}
+
+/* Weekend styling for Saturday and Sunday */
+.fc .fc-daygrid-day.fc-day-saturday,
+.fc .fc-daygrid-day.fc-day-sunday {
+    background-color: #f0f8ff; /* Light blue background for weekends */
+}
+
+/* Header of the calendar - Remove lines and add styling */
+.fc .fc-col-header-cell {
+    border: none;
+    background-color: #1976d2; /* Deep blue background for header */
+    color: white;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+/* Remove vertical lines between days */
+.fc .fc-daygrid-day {
+    border-right: none;
+}
+
+/* Remove horizontal lines between weeks */
+.fc .fc-daygrid-day-frame {
+    border-bottom: none;
+}
+
+/* Custom event styling */
+.fc .fc-event {
+    background-color: #42a5f5; /* Light blue background for events */
+    color: white; /* White text for readability */
+    padding: 3px 5px; /* Add padding for better spacing */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 12px; /* Smaller font size */
+    font-weight: 500; /* Medium weight */
+    margin: 3px 0; /* Space between events */
+}
+
+/* Booked event styling */
+.fc-event-booked {
+    background-color: #ff4d4d; /* Red background for booked events */
+    color: #ffffff; /* White text */
+}
+
+/* Available event styling */
+.fc-event-available {
+    background-color: #4caf50; /* Green background for available events */
+    color: #ffffff; /* White text */
+}
+
+/* Adjust calendar cell padding for better spacing */
+.fc .fc-daygrid-day-frame {
+    padding: 5px; /* Adjust padding to create more space in cells */
+}
+
+/* Active day highlighting */
+.fc .fc-day-today {
+    background-color: #e3f2fd; /* Light blue background for the current day */
+    border: 1px solid #1976d2; /* Border for emphasis */
+}
+
+</style>
 </head>
 <body>
-    <div class="container py-5">
-        <h1 class="text-dark mb-4">Online Booking</h1>
-        <form id="booking-form">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="name" placeholder="Your Name" required>
-                </div>
-                <div class="col-md-6">
-                    <input type="email" class="form-control" id="email" placeholder="Your Email" required>
-                </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="event" placeholder="Event" required>
-                </div>
-                <div class="col-md-6">
-                    <select class="form-select" id="select1" required>
-                        <option value="" disabled selected>Select Hall</option>
-                        <option value="main">Main Hall</option>
-                        <option value="mini">Mini Hall</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="selected-date" placeholder="Select Date" readonly required>
-                    <div class="calendar" id="calendar"></div>
-                </div>
-                <div class="col-md-6">
-                    <select class="form-select" id="time-slot" required>
-                        <option value="" disabled selected>Select a Time Slot</option>
-                        <option value="09:00-15:00">09:00 AM - 03:00 PM</option>
-                        <option value="16:00-22:00">04:00 PM - 10:00 PM</option>
-                    </select>
-                </div>
-                <div class="col-12">
-                    <textarea class="form-control" id="message" placeholder="Special Request" style="height: 100px"></textarea>
-                </div>
-                <div class="col-12">
-                    <button class="btn btn-primary w-100" type="submit">Book Now</button>
-                </div>
-            </div>
-        </form>
+
+  <div id="calendar-container">
+    <label for="hallSelect">Select Hall:</label>
+    <select id="hallSelect">
+      <option value="mainHall">Main Hall</option>
+      <option value="miniHall">Mini Hall</option>
+    </select>
+    <div id="calendar"></div>
+  </div>
+
+  <!-- Modal for Booking -->
+  <div id="modal">
+    <div id="modal-content">
+      <span id="closeModal">&times;</span>
+      <h2 class="modal-title">Book Appointment for <span id="modal-date" style="color: #4CAF50;"></span> - <span id="hall-name"></span></h2>
+      <form id="bookingForm">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" required />
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number:</label>
+          <input type="tel" id="phone" required />
+        </div>
+        <div class="form-group">
+          <label for="timeSlot">Time Slot:</label>
+          <select id="timeSlot" required></select>
+        </div>
+        <div class="form-group">
+          <label for="message">Message:</label>
+          <textarea id="message" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <button type="submit">Submit</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <script>
-        const bookedSlots = {
-            "main": ["2024-11-10", "2024-11-12"], // Unavailable dates for Main Hall
-            "mini": ["2024-11-11"]                // Unavailable dates for Mini Hall
-        };
+  <script>
+    const availabilityData = {
+        mainHall: {
+            "2024-11-05": { morning: true, evening: false },
+            "2024-11-07": { morning: true, evening: true },
+            "2024-11-09": { morning: true, evening: false },
+            "2024-11-10": { morning: false, evening: true },
+            "2024-11-12": { morning: true, evening: false },
+            "2024-11-14": { morning: true, evening: true },
+            "2024-11-16": { morning: true, evening: true },
+            "2024-11-18": { morning: false, evening: true },
+            "2024-11-20": { morning: false, evening: true },
+            "2024-11-22": { morning: false, evening: true },
+            "2024-11-23": { morning: true, evening: true },
+            "2024-11-25": { morning: false, evening: true },
+            "2024-11-28": { morning: true, evening: true },
+            "2024-11-30": { morning: true, evening: false }
+        },
+        miniHall: {
+            "2024-11-05": { morning: false, evening: true },
+            "2024-11-07": { morning: true, evening: true },
+            "2024-11-11": { morning: false, evening: true },
+            "2024-11-12": { morning: true, evening: false },
+            "2024-11-17": { morning: true, evening: true },
+            "2024-11-20": { morning: true, evening: true },
+            "2024-11-22": { morning: true, evening: true },
+            "2024-11-23": { morning: false, evening: true },
+            "2024-11-24": { morning: true, evening: false },
+            "2024-11-28": { morning: true, evening: false },
+            "2024-11-29": { morning: true, evening: true },
+            "2024-11-30": { morning: false, evening: true }
+        }
+    };
 
-        const calendar = document.getElementById("calendar");
-        const selectedDateInput = document.getElementById("selected-date");
-        const hallSelect = document.getElementById("select1");
+    let currentHall = 'mainHall';
+    
+    function createCalendar(hallData) {
+        const calendarEl = document.getElementById('calendar');
+        return new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            dateClick: function(info) {
+                const dateClicked = info.dateStr;
+                const date = new Date(dateClicked);
+                const month = date.getMonth();
 
-        hallSelect.addEventListener("change", createCalendar);
-
-        function createCalendar() {
-            calendar.innerHTML = ''; // Clear previous calendar
-            const selectedHall = hallSelect.value;
-
-            // Create a simple calendar for the next 30 days
-            const today = new Date();
-            for (let i = 0; i < 30; i++) {
-                const date = new Date(today);
-                date.setDate(today.getDate() + i);
-                const dateString = date.toISOString().split('T')[0];
-                const dayDiv = document.createElement("div");
-                dayDiv.className = "day";
-                dayDiv.innerText = date.getDate();
-
-                // Check if the selected hall has this date booked
-                if (bookedSlots[selectedHall] && bookedSlots[selectedHall].includes(dateString)) {
-                    dayDiv.classList.add("unavailable"); // Highlight unavailable dates
+                // Check if the date is available for the selected hall
+                if (month === 10 && hallData[dateClicked]) {
+                    // Date exists in availabilityData
+                    openBookingModal(dateClicked, currentHall === 'mainHall' ? 'Main Hall' : 'Mini Hall', hallData[dateClicked]);
+                } else if (month !== 10) {
+                    // For other months, show both slots available
+                    openBookingModal(dateClicked, currentHall === 'mainHall' ? 'Main Hall' : 'Mini Hall', { morning: true, evening: true });
                 } else {
-                    dayDiv.onclick = () => {
-                        selectedDateInput.value = dateString; // Set selected date
-                        clearSelectedDays();
-                        dayDiv.classList.add("selected"); // Highlight selected day
-                    };
+                    // If the date is not available, show an alert
+                    alert('The selected date is not available.');
                 }
+            },
+            events: function(info, successCallback) {
+                const events = [];
+                Object.keys(hallData).forEach(date => {
+                    const availableSlots = hallData[date];
 
-                calendar.appendChild(dayDiv);
-            }
-        }
+                    // Morning Slot (9 AM - 3 PM)
+                    events.push({
+                        title: availableSlots.morning ? '9 AM - 3 PM - Available' : '9 AM - 3 PM - Booked',
+                        start: date,
+                        backgroundColor: availableSlots.morning ? 'white' : 'red', // Blue for booked
+                        textColor: availableSlots.morning ? 'green' : 'white',
+                        allDay: true,
+                    });
 
-        function clearSelectedDays() {
-            const days = document.querySelectorAll('.day');
-            days.forEach(day => {
-                day.classList.remove('selected');
-            });
-        }
+                    // Evening Slot (4 PM - 10 PM)
+                    events.push({
+                        title: availableSlots.evening ? '4 PM - 10 PM - Available' : '4 PM - 10 PM - Booked',
+                        start: date,
+                        backgroundColor: availableSlots.evening ? 'white' : 'red',
+                        textColor: availableSlots.evening ? 'green' : 'white',
+                        allDay: true,
+                    });
+                });
+                successCallback(events);
+            },
+            eventClick: function(info) {
+                const event = info.event;
+                const dateClicked = event.startStr;
+                const isAvailableMorning = event.title.includes('9 AM - 3 PM - Available');
+                const isAvailableEvening = event.title.includes('4 PM - 10 PM - Available');
 
-        document.getElementById("booking-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-            alert("Booking confirmed!");
-            // Logic to handle form submission
+                openBookingModal(dateClicked, currentHall === 'mainHall' ? 'Main Hall' : 'Mini Hall', {
+                    morning: isAvailableMorning,
+                    evening: isAvailableEvening,
+                });
+            },
+            headerToolbar: {
+        left: 'prev',  // Left arrow for previous month
+        center: 'title',  // Month name (e.g., November)
+        right: 'dayGridMonth,dayGridWeek,dayGridDay,next',  // Right arrow for next month
+
+    }
+           
         });
-    </script>
+    }
+
+    let calendar = createCalendar(availabilityData[currentHall]);
+    calendar.render();
+
+    document.getElementById('hallSelect').addEventListener('change', function() {
+        currentHall = this.value;
+        calendar.destroy();
+        calendar = createCalendar(availabilityData[currentHall]);
+        calendar.render();
+    });
+
+    function openBookingModal(date, hallName, availableSlots) {
+        document.getElementById('modal').style.display = 'block';
+        document.getElementById('modal').style.opacity = 1;
+        document.getElementById('modal-date').innerText = date;
+        document.getElementById('hall-name').innerText = hallName;
+
+        const timeSlotSelect = document.getElementById('timeSlot');
+        timeSlotSelect.innerHTML = '';
+
+        // Add both morning and evening slots as available
+        if (availableSlots.morning) {
+            const morningOption = document.createElement('option');
+            morningOption.value = 'morning';
+            morningOption.text = 'Morning (9 AM - 3 PM)';
+            timeSlotSelect.add(morningOption);
+        }
+        if (availableSlots.evening) {
+            const eveningOption = document.createElement('option');
+            eveningOption.value = 'evening';
+            eveningOption.text = 'Evening (4 PM - 10 PM)';
+            timeSlotSelect.add(eveningOption);
+        }
+    }
+
+    document.getElementById('closeModal').onclick = function() {
+        document.getElementById('modal').style.display = 'none';
+    };
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('modal')) {
+            document.getElementById('modal').style.display = 'none';
+        }
+    };
+</script>
+
+
 </body>
 </html>
